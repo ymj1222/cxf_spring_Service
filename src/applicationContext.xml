@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" 
+	xmlns:soap="http://cxf.apache.org/bindings/soap"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://cxf.apache.org/bindings/soap 
+		http://cxf.apache.org/schemas/configuration/soap.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- 扫描com.yr下的所有包 -->
+	<context:component-scan base-package="com.ymj" />
+	<!-- 引入外部配置文件 -->
+	<context:property-placeholder location="classpath:db.properties" />
+	<!-- 使 AspectJ 的注解起作用 -->
+	<aop:aspectj-autoproxy />
+
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+		<property name="initialPoolSize" value="${jdbc.initPoolSize}"></property>
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+	</bean>
+
+
+	<!-- 配置 Spirng 的 JdbcTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 配置 NamedParameterJdbcTemplate, 该对象可以使用具名参数, 其没有无参数的构造器, 所以必须为其构造器指定参数 -->
+	<bean id="namedParameterJdbcTemplate"
+		class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+		<constructor-arg ref="dataSource"></constructor-arg>
+	</bean>
+
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<bean id="AuthorInterceptor" class="com.ymj.auth.AuthorInterceptor"></bean>
+	<jaxws:server id="usersWebService" serviceClass="com.ymj.webservice.UsersWebService"
+		address="/usersWebser">
+		<!-- address为服务发布二级地址 完整地址为 /项目发布名称/cfx拦截地址/address?wsdl(cfx拦截地址在web.xml中url-pattern标签中配置) -->
+		<jaxws:serviceBean>
+			<!--服务实现类 -->
+			<bean class="com.ymj.webservice.Impl.UsersWebServiceImpl"/>
+		</jaxws:serviceBean>
+		<jaxws:inInterceptors>
+			<ref bean="AuthorInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:server>
+</beans>
