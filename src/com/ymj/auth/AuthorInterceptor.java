@@ -22,7 +22,7 @@ public  class AuthorInterceptor extends AbstractPhaseInterceptor<SoapMessage>{
 	
 	
 	public void handleMessage(SoapMessage message) throws Fault {
-		System.out.println("服务端验证1");
+		System.out.println("操你妈");
 		  SOAPMessage mess = message.getContent(SOAPMessage.class);
 		  if (mess == null) {			  
 			   saa.handleMessage(message);
