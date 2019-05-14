@@ -41,7 +41,7 @@ public  class AuthorInterceptor extends AbstractPhaseInterceptor<SoapMessage>{
 			  NodeList nodepass = head.getElementsByTagName("b");
  
 			  if("ymj".equals(nodes.item(0).getTextContent())&&("223618".equals(nodepass.item(0).getTextContent()))){
-				    System.out.println("验证成功");
+				    System.out.println("验证成功1");
 			  }else {
 					SOAPException soapExc = new SOAPException("验证失败");
 					throw new Fault(soapExc);
