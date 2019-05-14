@@ -22,7 +22,7 @@ public  class AuthorInterceptor extends AbstractPhaseInterceptor<SoapMessage>{
 	
 	
 	public void handleMessage(SoapMessage message) throws Fault {
-		System.out.println("æœåŠ¡ç«¯éªŒè¯1");
+		System.out.println("·şÎñ¶ËÑéÖ¤1");
 		  SOAPMessage mess = message.getContent(SOAPMessage.class);
 		  if (mess == null) {			  
 			   saa.handleMessage(message);
@@ -41,11 +41,11 @@ public  class AuthorInterceptor extends AbstractPhaseInterceptor<SoapMessage>{
 			  NodeList nodepass = head.getElementsByTagName("b");
  
 			  if("ymj".equals(nodes.item(0).getTextContent())&&("223618".equals(nodepass.item(0).getTextContent()))){
-				    System.out.println("éªŒè¯æˆåŠŸ");
+				    System.out.println("ÑéÖ¤³É¹¦");
 			  }else {
-					SOAPException soapExc = new SOAPException("è®¤è¯é”™è¯¯");
+					SOAPException soapExc = new SOAPException("ÈÏÖ¤´íÎó");
 					throw new Fault(soapExc);
 				}
-			  System.out.println("æ­å–œä½ éªŒè¯æˆåŠŸï¼Œä½¿ç”¨æ„‰å¿«");
+			  System.out.println("¹§Ï²ÄãÑéÖ¤³É¹¦£¬Ê¹ÓÃÓä¿ì");
 			 }
 	}
